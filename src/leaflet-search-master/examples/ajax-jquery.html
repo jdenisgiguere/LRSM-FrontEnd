@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/MarkerCluster.css" />
+   <link rel= "stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/MarkerCluster.Default.css" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"/>
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+  
+   <link rel="stylesheet" href="leaflet-search-master/style.css" />	
+	<link rel="stylesheet" href="leaflet-search-master/src/leaflet-search.css" />
+   
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/leaflet.markercluster-src.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/leaflet.markercluster.js"></script>
+   <script src="https://unpkg.com/leaflet.icon.glyph@latest"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+   <script src="leaflet-search-master/src/leaflet-search.js"></script>
+	<script src="
+https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
+</head>
+
+<body>
+<h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
+
+<h4>AJAX Example(by jQuery): <em>search locations by Ajax request</em></h4>
+<div id="map"></div>
+
+<div id="post-it">
+<b>Search values:</b><br />
+black, blue, cyan, darkblue, darkred, darkgray, gray, gree, red, yellow, white
+</div>
+
+
+<script>
+
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng([41.575730,13.002411]) });
+
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+
+	function searchByAjax(text, callResponse)//callback for 3rd party ajax requests
+	{
+		return $.ajax({
+			url: 'search.php',	//read comments in search.php for more information usage
+			type: 'GET',
+			data: {q: text},
+			dataType: 'json',
+			success: function(json) {
+				callResponse(json);
+			}
+		});
+	}
+
+	map.addControl( new L.Control.Search({sourceData: searchByAjax, text:'Color...', markerLocation: true}) );
+
+</script>
+
+
+
+</body>
+</html>

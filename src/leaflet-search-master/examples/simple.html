@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/MarkerCluster.css" />
+   <link rel= "stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/MarkerCluster.Default.css" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"/>
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+  
+   <link rel="stylesheet" href="leaflet-search-master/style.css" />	
+	<link rel="stylesheet" href="leaflet-search-master/src/leaflet-search.css" />
+   
+   
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="leaflet-search-master/src/leaflet-search.js"></script>
+</head>
+
+<body>
+<h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
+
+<h4>Simple Example: <em>search markers in layer by title</em></h4>
+<div id="map"></div>
+
+<div id="post-it">
+<b>Search values:</b><br />
+aquamarine, black, blue, cyan, darkblue, darkred, darkgray, dodgerblue, gray, green, red, skyblue, yellow, white ...
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+<script src="../src/leaflet-search.js"></script>
+<script>
+
+	//sample data values for populate map
+	var data = [  
+   {  
+      "id":50,
+      "date":"2017-05-15T19:04:18",
+      "date_gmt":"2017-05-15T19:04:18",
+      "guid":{  
+         "rendered":"http:\/\/staging-lrsm.anagraph.io\/?post_type=story&#038;p=50"
+      },
+      "modified":"2017-05-15T19:04:18",
+      "modified_gmt":"2017-05-15T19:04:18",
+      "slug":"story-2",
+      "status":"publish",
+      "type":"story",
+      "link":"http:\/\/staging-lrsm.anagraph.io\/story\/story-2\/",
+      "title":{  
+         "rendered":"Story-2"
+      },
+      "author":1,
+      "template":"",
+      "geo_infos":{  
+         "type":"FeatureCollection",
+         "features":[  
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Polygon",
+                  "coordinates":[  
+                     [  
+                        [  
+                           -74.29779052734376,
+                           45.612116176517304
+                        ],
+                        [  
+                           -74.28680419921876,
+                           45.3444241045224
+                        ],
+                        [  
+                           -74.43237304687501,
+                           45.319323121350145
+                        ],
+                        [  
+                           -74.60540771484376,
+                           45.537136680398596
+                        ],
+                        [  
+                           -74.42138671875001,
+                           45.60058738537025
+                        ],
+                        [  
+                           -74.42138671875001,
+                           45.60058738537025
+                        ],
+                        [  
+                           -74.29779052734376,
+                           45.612116176517304
+                        ]
+                     ]
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Point",
+                  "coordinates":[  
+                     -74.67956542968751,
+                     45.6082735094011
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Point",
+                  "coordinates":[  
+                     -74.43649291992189,
+                     45.663006662228675
+                  ]
+               }
+            }
+         ]
+      },
+      "_links":{  
+         "self":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/story\/50"
+            }
+         ],
+         "collection":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/story"
+            }
+         ],
+         "about":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/types\/story"
+            }
+         ],
+         "author":[  
+            {  
+               "embeddable":true,
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/users\/1"
+            }
+         ],
+         "wp:attachment":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/media?parent=50"
+            }
+         ],
+         "curies":[  
+            {  
+               "name":"wp",
+               "href":"https:\/\/api.w.org\/{rel}",
+               "templated":true
+            }
+         ]
+      }
+   },
+   {  
+      "id":46,
+      "date":"2017-05-15T18:06:32",
+      "date_gmt":"2017-05-15T18:06:32",
+      "guid":{  
+         "rendered":"http:\/\/staging-lrsm.anagraph.io\/?post_type=story&#038;p=46"
+      },
+      "modified":"2017-05-15T18:44:00",
+      "modified_gmt":"2017-05-15T18:44:00",
+      "slug":"first-story",
+      "status":"publish",
+      "type":"story",
+      "link":"http:\/\/staging-lrsm.anagraph.io\/story\/first-story\/",
+      "title":{  
+         "rendered":"First Story"
+      },
+      "author":1,
+      "template":"",
+      "geo-infos":{  
+         "type":"FeatureCollection",
+         "features":[  
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Polygon",
+                  "coordinates":[  
+                     [  
+                        [  
+                           -433.58119010925293,
+                           45.52697551076455
+                        ],
+                        [  
+                           -433.55458259582525,
+                           45.5300420926445
+                        ],
+                        [  
+                           -433.5526084899903,
+                           45.52144321475166
+                        ],
+                        [  
+                           -433.5640239715577,
+                           45.51470751138338
+                        ],
+                        [  
+                           -433.56410980224615,
+                           45.51470751138338
+                        ],
+                        [  
+                           -433.5745811462403,
+                           45.520541158384134
+                        ],
+                        [  
+                           -433.5812759399414,
+                           45.52018033178759
+                        ],
+                        [  
+                           -433.5796451568604,
+                           45.522645934077865
+                        ],
+                        [  
+                           -433.5796451568604,
+                           45.522645934077865
+                        ],
+                        [  
+                           -433.58119010925293,
+                           45.52697551076455
+                        ]
+                     ]
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"LineString",
+                  "coordinates":[  
+                     [  
+                        -433.5872840881348,
+                        45.528659145043044
+                     ],
+                     [  
+                        -433.55475425720215,
+                        45.53130475423664
+                     ]
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Point",
+                  "coordinates":[  
+                     -433.5653114318848,
+                     45.52270606936925
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Point",
+                  "coordinates":[  
+                     -433.5873699188233,
+                     45.52877940270606
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Point",
+                  "coordinates":[  
+                     -433.5546684265137,
+                     45.53130475423664
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Polygon",
+                  "coordinates":[  
+                     [  
+                        [  
+                           -74.10278320312501,
+                           45.5236682252898
+                        ],
+                        [  
+                           -73.39691162109376,
+                           45.805828539928356
+                        ],
+                        [  
+                           -73.10852050781251,
+                           45.394592696926615
+                        ],
+                        [  
+                           -73.78967285156251,
+                           45.18784438050534
+                        ],
+                        [  
+                           -73.78967285156251,
+                           45.18784438050534
+                        ],
+                        [  
+                           -74.08218383789064,
+                           45.451460867719966
+                        ],
+                        [  
+                           -74.08218383789064,
+                           45.451460867719966
+                        ],
+                        [  
+                           -74.10278320312501,
+                           45.5236682252898
+                        ]
+                     ]
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"Point",
+                  "coordinates":[  
+                     -73.67156982421876,
+                     45.51404592560427
+                  ]
+               }
+            },
+            {  
+               "type":"Feature",
+               "properties":{  
+
+               },
+               "geometry":{  
+                  "type":"LineString",
+                  "coordinates":[  
+                     [  
+                        -74.31976318359376,
+                        45.19171574701543
+                     ],
+                     [  
+                        -74.19067382812501,
+                        45.49094569262732
+                     ],
+                     [  
+                        -73.98742675781251,
+                        45.627484212338246
+                     ],
+                     [  
+                        -73.66058349609376,
+                        45.519819502877084
+                     ]
+                  ]
+               }
+            }
+         ]
+      },
+      "_links":{  
+         "self":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/story\/46"
+            }
+         ],
+         "collection":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/story"
+            }
+         ],
+         "about":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/types\/story"
+            }
+         ],
+         "author":[  
+            {  
+               "embeddable":true,
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/users\/1"
+            }
+         ],
+         "wp:attachment":[  
+            {  
+               "href":"http:\/\/staging-lrsm.anagraph.io\/wp-json\/wp\/v2\/media?parent=46"
+            }
+         ],
+         "curies":[  
+            {  
+               "name":"wp",
+               "href":"https:\/\/api.w.org\/{rel}",
+               "templated":true
+            }
+         ]
+      }
+   }
+]
+
+	var map = new L.Map('map', {zoom: 9, center: new L.latLng(data[0].loc) });	//set center from first location
+
+	map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+
+	var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	
+	map.addLayer(markersLayer);
+
+	var controlSearch = new L.Control.Search({
+		position:'topright',		
+		layer: markersLayer,
+		initial: false,
+		zoom: 12,
+		marker: false
+	});
+
+	map.addControl( controlSearch );
+
+	////////////populate map with markers from sample data
+	for(i in data) {
+		var title = data[i].title.rendered,	//value searched
+			loc = data[i].geo_infos,		//position found
+			marker = new L.Marker(new L.latLng(loc), {title: title} );//se property searched
+		marker.bindPopup('title: '+ title );
+		markersLayer.addLayer(marker);
+	}
+
+</script>
+
+<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a rel="author" href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
+
+<script type="text/javascript" src="/labs-common.js"></script>
+
+</body>
+</html>

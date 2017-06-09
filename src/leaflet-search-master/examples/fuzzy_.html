@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/MarkerCluster.css" />
+   <link rel= "stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/MarkerCluster.Default.css" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"/>
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+  
+   <link rel="stylesheet" href="leaflet-search-master/style.css" />	
+	<link rel="stylesheet" href="leaflet-search-master/src/leaflet-search.css" />
+   
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/leaflet.markercluster-src.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/leaflet.markercluster.js"></script>
+   <script src="https://unpkg.com/leaflet.icon.glyph@latest"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+   <script src="leaflet-search-master/src/leaflet-search.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
+
+</head>
+
+<body>
+<h3><a href="../"><big>◄</big> Leaflet.Control.Search</a></h3>
+
+
+<div id="map"></div>
+
+<div id="post-it">
+Search restaurants in Rome, data by <a href="http://wiki.openstreetmap.org/wiki/Overpass_API">OSM Overpass</a><br />
+Example: <i>pizza</i>, <i>vege</i>, <i>japa</i>, <i>giappo</i>, <i>cucina romana</i>, <i>chine</i> ...
+</div>
+
+
+
+
+<script src="http://staging-lrsm.anagraph.io/wp-json/wp/v2/story"></script>
+<script>
+
+	var map = L.map('map', {
+			zoom: 12,
+			center: new L.latLng(41.8990, 12.4977),
+			layers: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+		});
+	
+	var restLayers = L.geoJson(story.geo_infos.features, {
+			pointToLayer: function(feature, latlng) {
+
+				var props = L.Util.extend({
+							'name': '',
+							'cuisine': '',
+							'website': '',
+							'phone': ''
+						},feature.properties),
+					textPopup = L.Util.template("<h3>{name}</h3>{cuisine}<br>{website}<br>{phone}", props),
+					
+
+				return L.circleMarker(latlng).bindPopup(textPopup);
+			}
+		}).addTo(map);
+
+	var fuse = new Fuse(restaurant500.features, {
+		keys: ['properties.name', 'properties.cuisine']
+	});
+
+	L.control.search({
+		layer: restLayers,
+		propertyName: 'name',
+		filterData: function(text, records) {
+			var jsons = fuse.search(text),
+				ret = {}, key;
+			
+			for(var i in jsons) {
+				key = jsons[i].properties.name;
+				ret[ key ]= records[key];
+			}
+
+			console.log(jsons,ret);
+			return ret;
+		}
+	})
+	.on('search:locationfound', function(e) {
+		e.layer.openPopup();
+	})
+	.addTo(map);
+
+
+</script>
+
+<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a rel="author" href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
+
+<script type="text/javascript" src="/labs-common.js"></script>
+
+</body>
+</html>

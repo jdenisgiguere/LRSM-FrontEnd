@@ -8,9 +8,9 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
-    <link rel="stylesheet" href="chosen/chosen.css">
-	 <link rel="stylesheet" href="chosen/docsupport/style.css">
-  <link rel="stylesheet" href="chosen/docsupport/prism.css">
+    <link rel="stylesheet" href="src/chosen/chosen.css">
+	 <link rel="stylesheet" href="src/chosen/docsupport/style.css">
+  <link rel="stylesheet" href="src/chosen/docsupport/prism.css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -33,7 +33,17 @@ body {
   border-radius: 1px;
   	
   }
-
+    #headers{
+	 position: absolute;
+	x: 0,
+	y:0,
+	width : 1440px,
+	height: 80px,
+	opacity: 100%,
+	color: #494949
+	 background-color: #3CBC8D
+}
+	
 	input 
 	{
   position: relative;
@@ -84,16 +94,16 @@ body {
  top: 5%;
  right:2%; 
  position:absolute;
- width:95%;
+ width:80%;
  height:90%;
 
  border: 3px solid #b7b7b7;
  border-radius: 1px;
  background: white;
 	}
-			
-
 	
+
+
 
 .legend {
 	line-height: 18px;
@@ -126,6 +136,8 @@ body {
 </head>
 <body>
 
+<div id="header" class="header"> </div id="inputs">
+
  <div id="inputs">
  
 <input id="autocomplete_id"   placeholder="Chercher par id">
@@ -133,7 +145,7 @@ body {
 <input id="autocomplete_autor" placeholder="Chercher Par Auteurs"> 
 <input id="autocomplete_tag" placeholder="Chercher par mot-clés">  
 <input id="autocomplete_title"  placeholder="Chercher par Titre"> 
-<input id="autocomplete_lucky" placeholder="Feeling lucky">
+
 
  </div id="inputs">
  
@@ -157,18 +169,23 @@ var baseLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/
 				 .addTo(map);
 		
 
+		
+		
 
 function renderStory(story){			
 
 story = story ;
 geo = story.geo_infos.features;
+
+
+
 var title = story.title.rendered;
 var auteurs = story.acf.auteurs[0].post_title;	
 
 var storyId = story.id
 var storyLink = story.link;
-var ptag	= story['primary_tag'];
-var stag	= story['secondary_tag'];
+var ptag = story['primary_tag'];
+var stag=  story['secondary_tag'];
 var genre = story.genre;
 var project = story.project;
 
@@ -199,7 +216,7 @@ var setColor = {
 var marker = L.geoJSON(geo,{
 
 	filter: function(feature, layer) {
-	return feature.properties.main == true;	
+		return feature.properties.main == true;	
 		//return  == true;	
 	},
 		   
@@ -217,43 +234,169 @@ var marker = L.geoJSON(geo,{
  markers.addLayer(marker);
  map.addLayer(markers);
 
- //var lGroup = L.layergroup(markers)
-//map.fitBounds(lGroup.getBounds());
+	// Besoin debug //
+	//var lGroup = L.layergroup(markers)
+	//map.fitBounds(lGroup.getBounds());
 
 }
 
-function toggleLayer(){
-var baseMaps={}
-var overlays = {
-    'Ajouter': auteursmarker,
-
-};
-L.control.layers(baseMaps,overlays).addTo(map);
-}
-//toggleLayer();
-function easyButton(){
-
-L.easyButton( 'test', function(){
-  
-}).addTo(map);
-
- 
-L.easyButton( 'TEST', function(){
-  map.setView([38, 139], 4);
-}).addTo(map);
-
-L.easyButton( 'fa-usd', function(){
-  map.setView([37.8, -96], 3);
-}).addTo(map);
-}
-//easyButton();
 function getGeoJSON(){
 
 		$.getJSON('http://staging-lrsm.anagraph.io/wp-json/wp/v2/story',
 			function (stories){
-				 stories.map(renderStory);	
+				stories.map(renderStory);	
+				
+				
+			function searchTitle(){
+				for (i in stories){
+				$( "#autocomplete_title" ).autocomplete({
+					source: function (request, response) {
+						response($.map(stories, function(v,i){
+							return {
+								label: v.title.rendered,
+								value: v.title.rendered
+											 };
+										}
+									)
+								);
+					minLength: 2
+							},
+					
+					select: function (e, ui) {
+							
+							$('#autocomplete_title').on('autocompleteselect', function (e, ui) { 
+							 
+							 return alert('on click -> map.fitBounds(layerGroup.getBounds())');
+							/*
+							if (stories.id == ui.item.value){
+							 map.fitBounds(layerGroup.getBounds());
+															};*/
+									}
+								)}
+							
+						})
 					}
-				)};
+				}
+			searchTitle()
+				
+			function searchAutor(){
+				for (i in stories){
+				$( "#autocomplete_autor" ).autocomplete({
+					source: function (request,response) {
+						response($.map(stories, function(v,i){
+							return {
+								label: v.acf.auteurs[0].post_title,
+								value: v.acf.auteurs[0].post_title
+											 };
+										}
+									)
+								);
+					minLength: 2
+							},
+
+						select: function (e, ui) {
+
+							alert('on click -> map.fitBounds(layerGroup.getBounds())')
+						}
+
+						
+						
+							});
+						}
+					}	
+				searchAutor()
+				
+			function searchGenre(){
+				for (i in stories){
+				$( "#autocomplete_genre" ).autocomplete({
+					source: function (request, response) {
+						response($.map(stories, function(v,i){
+							return {
+								label: v.genre,
+								value: v.id
+											 };
+										}
+									)
+								);
+					minLength: 2
+							},
+
+						select: function (e, ui) {
+
+						  alert('on click -> map.fitBounds(layerGroup.getBounds())')
+						},
+
+						
+						
+							});
+						}
+					}	
+				searchGenre()
+				
+			function searchTag(){
+				$(".autocomplete_tag")
+				for (i in stories){
+					$( "#autocomplete_tag" ).autocomplete({
+					source: function (request, response) {
+						response($.map(stories, function(v,i){
+							return {
+								label: v.tag,
+								value: v.id
+											 };
+										}
+									)
+								);
+					minLength: 2
+							},
+
+						select: function (e, ui) {
+							
+						   
+							alert('on click -> map.fitBounds(layerGroup.getBounds())');
+						},
+
+									
+							});
+						}
+					}	
+				searchTag()
+
+
+			function searchID(){
+							$(".autocomplete_id")
+							for (i in stories){
+								$( "#autocomplete_id" ).autocomplete({
+								source: function (request, response) {
+									response($.map(stories, function(v,i){
+										return {
+											label: v.id,
+											value: v.id
+														 };
+													}
+												)
+											);
+								minLength: 2
+										},
+
+									select: function (e, ui) {
+										
+									   
+							//$('#autocomplete_title').on('autocompleteselect', function (e, ui) { });
+							 
+							 alert('on click -> Get the stories id THEN -> filter the L.geoJSON with it THEN -> map.fitBounds(layerGroup.getBounds())');
+							
+														
+												
+											},
+
+												
+										});
+									}
+								}	
+							searchID()						
+				
+	})
+};
 getGeoJSON()
 
 
@@ -308,7 +451,6 @@ function getAffiliation(){
 		})}
 getAffiliation();
 
-
 function renderProject(project){
 	 project=project
 	 project_id=project.id
@@ -325,20 +467,47 @@ function getProject(){
 		})}
 getProject();
 
+/* controlers */ 
+
+function toggleLayer(){
+var baseMaps={}
+var overlays = {
+    'Ajouter': auteursmarker,
+
+};
+L.control.layers(baseMaps,overlays).addTo(map);
+}
+//toggleLayer();
+function easyButton(){
+
+L.easyButton( 'test', function(){
+  
+}).addTo(map);
+
+ 
+L.easyButton( 'TEST', function(){
+  map.setView([38, 139], 4);
+}).addTo(map);
+
+L.easyButton( 'fa-usd', function(){
+  map.setView([37.8, -96], 3);
+}).addTo(map);
+}
+//easyButton();
 
   </script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
    	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/leaflet.markercluster-src.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.5/leaflet.markercluster.js"></script>
    <script src="https://unpkg.com/leaflet.icon.glyph@latest"></script>
-   <script src="leaflet-search-master/src/leaflet-search.js"></script>
-   	<script src="leaflet-fusesearch-master/src/leaflet.fusesearch.js"></script>
+   <script src="src/leaflet-search-master/src/leaflet-search.js"></script>
+   	<script src="src/leaflet-fusesearch-master/src/leaflet.fusesearch.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-geo/1.6.4/d3-geo.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.0/topojson.js"></script>
    <script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
-   <script src="chosen/chosen.jquery.js"></script>
-   <script src="chosen/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
-  <script src="chosen/docsupport/init.js" type="text/javascript" charset="utf-8"></script>
+   <script src="src/chosen/chosen.jquery.js"></script>
+   <script src="src/chosen/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
+  <script src="src/chosen/docsupport/init.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

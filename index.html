@@ -169,10 +169,21 @@ var baseLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/
 				 .addTo(map);
 		
 
-		
-		
 
-function renderStory(story){			
+
+ 
+
+function renderStory(story,getFilters){			
+
+	function getFilters (){
+			for (i in story){
+				
+				return _filter = false //true
+			}
+		}
+	getFilters();
+	console.log(getFilters._filter)
+
 
 story = story ;
 geo = story.geo_infos.features;
@@ -192,6 +203,9 @@ var project = story.project;
 var markers = L.markerClusterGroup();  
 
 
+
+
+	
 function get_random_color(){
 	 var letters = '0123456789ABCDEF'.split('');
 	 var color = '#';
@@ -215,9 +229,9 @@ var setColor = {
 	
 var marker = L.geoJSON(geo,{
 
-	filter: function(feature, layer) {
-		return feature.properties.main == true;	
-		//return  == true;	
+	filter: function(feature) {
+		return feature.properties.main == getFilters() ;
+		
 	},
 		   
 	pointToLayer: function(feature, latlng) {
@@ -243,7 +257,7 @@ var marker = L.geoJSON(geo,{
 function getGeoJSON(){
 
 		$.getJSON('http://staging-lrsm.anagraph.io/wp-json/wp/v2/story',
-			function (stories){
+			function fStories (stories){
 				stories.map(renderStory);	
 				
 				
@@ -276,9 +290,13 @@ function getGeoJSON(){
 							
 						})
 					}
+					
 				}
-			searchTitle()
 				
+			searchTitle()
+		
+			
+			
 			function searchAutor(){
 				for (i in stories){
 				$( "#autocomplete_autor" ).autocomplete({
